@@ -1,0 +1,92 @@
+# clinical/cancers/colorectal/pathways.yaml — Colorectal Cancer Pathways
+# Namespace: colorectal — ISOLATED from all other cancer modules
+# Phase 7A. Research use only. Not a licensed medical device.
+
+version: "7.0.0"
+cancer: colorectal
+
+colorectal:
+  metastatic:
+    first_line:
+      MSI_H:
+        regimen: "Pembrolizumab"
+        evidence: "KEYNOTE-177 (NEJM 2020)"
+        nccn_category: "1"
+        note: "IO first-line for dMMR/MSI-H mCRC"
+
+      BRAF_V600E:
+        regimen: "FOLFOXIRI + Bevacizumab"
+        evidence: "TRIBE2 (Lancet Oncol 2020)"
+        nccn_category: "2A"
+
+      RAS_wt_left:
+        regimen: "FOLFOX + Cetuximab"
+        evidence: "FIRE-3 (Lancet Oncol 2014)"
+        nccn_category: "1"
+        note: "Left-sided RAS-wt: anti-EGFR preferred"
+
+      RAS_wt_right:
+        regimen: "FOLFOX + Bevacizumab"
+        evidence: "CALGB 80405"
+        nccn_category: "1"
+        note: "Right-sided: bevacizumab preferred"
+
+      KRAS_mut:
+        regimen: "FOLFOX + Bevacizumab"
+        evidence: "NCCN CRC Guidelines"
+        nccn_category: "1"
+        anti_EGFR_contraindicated: true
+        note: "KRAS/NRAS mutant: cetuximab and panitumumab CONTRAINDICATED"
+
+    second_line:
+      BRAF_V600E:
+        regimen: "Encorafenib + Cetuximab"
+        evidence: "BEACON-CRC (NEJM 2019)"
+        nccn_category: "1"
+
+      MSI_H:
+        regimen: "Nivolumab + Ipilimumab"
+        evidence: "CheckMate-142 (JCO 2018)"
+        nccn_category: "1"
+
+      other:
+        regimen: "FOLFIRI + Bevacizumab"
+        evidence: "NCCN CRC Guidelines"
+        nccn_category: "1"
+
+    # PHASE 10: Third-line options (Fix Issue 3) — correctly indented under metastatic
+    third_line:
+      MSI_H:
+        regimen: "Pembrolizumab (MSI-high rechallenge/continuation)"
+        evidence: "KEYNOTE-158 (JCO 2020; DOI:10.1200/JCO.19.02105)"
+        nccn_category: "1B"
+        orr: 0.34
+        required_biomarkers: {MSI: high}
+        note: "3L dMMR/MSI-H mCRC refractory to chemotherapy."
+      MSS:
+        options:
+          - regimen: "Trifluridine/Tipiracil (TAS-102)"
+            evidence: "RECOURSE (Lancet Oncol 2018; DOI:10.1016/S1470-2045(18)30153-X)"
+            nccn_category: "1B"
+            orr: 0.12
+            required_biomarkers: {}
+            note: "3L refractory mCRC. Neutropenia monitoring. Modest OS benefit."
+          - regimen: "Regorafenib (Stivarga)"
+            evidence: "CORRECT (Lancet Oncol 2013; DOI:10.1016/S1470-2045(12)70465-1)"
+            nccn_category: "1B"
+            orr: 0.01
+            required_biomarkers: {}
+            note: "3L refractory mCRC. SD primary endpoint. Weekly LFT monitoring."
+          - regimen: "Bevacizumab rechallenge + capecitabine"
+            evidence: "NCCN CRC Guidelines; Phase II rechallenge data"
+            nccn_category: "2B"
+            orr: 0.10
+            required_biomarkers: {}
+            note: "Palliative option after progression on standard regimens."
+
+  biomarker_rules:
+    anti_EGFR_eligibility:
+      requires: "RAS wildtype (KRAS exons 2/3/4 + NRAS exons 2/3/4)"
+      contraindicated_if: "Any KRAS or NRAS mutation"
+    MSI_testing: required_all_patients
+    BRAF_testing: required_all_patients

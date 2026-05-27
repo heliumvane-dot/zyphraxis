@@ -1,0 +1,72 @@
+# clinical/cancers/prostate/pathways.yaml — Prostate Cancer Pathways
+# Namespace: prostate — ISOLATED from all other cancer modules
+# Phase 7A. Research use only. Not a licensed medical device.
+
+version: "7.0.0"
+cancer: prostate
+
+prostate:
+  metastatic:
+    hormone_sensitive:
+      high_volume:
+        regimen: "ADT + Abiraterone + Prednisone"
+        evidence: "LATITUDE (NEJM 2017)"
+        nccn_category: "1"
+      low_volume:
+        regimen: "ADT + Docetaxel"
+        evidence: "CHAARTED (NEJM 2015)"
+        nccn_category: "1"
+      alternative:
+        regimen: "ADT + Enzalutamide"
+        evidence: "ARCHES (JCO 2019)"
+        nccn_category: "1"
+
+    CRPC:
+      first_line:
+        regimen: "Enzalutamide"
+        evidence: "PREVAIL (NEJM 2014)"
+        nccn_category: "1"
+      BRCA_mutant:
+        regimen: "Olaparib"
+        evidence: "PROfound (NEJM 2020)"
+        nccn_category: "1"
+        note: "HRR gene alteration required"
+      post_AR_inhibitor:
+        regimen: "Docetaxel + Prednisone"
+        evidence: "TAX327 (NEJM 2004)"
+        nccn_category: "1"
+
+    # PHASE 10: Third-line CRPC options (Fix Issue 3) — correctly indented under metastatic
+    third_line_CRPC:
+      options:
+        - regimen: "Docetaxel rechallenge"
+          evidence: "Phase II rechallenge data; GAUSS retrospective"
+          nccn_category: "2A"
+          orr: 0.32
+          required_biomarkers: {}
+          note: "3L mCRPC if >=6 months from prior docetaxel. G-CSF prophylaxis."
+        - regimen: "Cabazitaxel + prednisone"
+          evidence: "TROPIC (Lancet 2010; DOI:10.1016/S0140-6736(10)61389-X)"
+          nccn_category: "1B"
+          orr: 0.28
+          required_biomarkers: {}
+          note: "3L mCRPC after docetaxel. Neutropenia monitoring essential."
+        - regimen: "Radium-223 (Xofigo)"
+          evidence: "ALSYMPCA (NEJM 2013; DOI:10.1056/NEJMoa1213755)"
+          nccn_category: "1A"
+          orr: 0.0
+          required_biomarkers: {bone_metastases: present}
+          contraindications: [visceral_metastases, spinal_cord_compression]
+          note: "Symptomatic bone mets only. OS benefit. No visceral mets."
+        - regimen: "Abiraterone + prednisone rechallenge"
+          evidence: "GAUSS retrospective analysis; Phase 3 rechallenge data"
+          nccn_category: "2B"
+          orr: 0.05
+          required_biomarkers: {}
+          note: "Rechallenge if >=6 months from prior abiraterone. LFT monitoring."
+
+  biomarker_rules:
+    HRR_testing: recommended_all_mCRPC
+    germline_BRCA: recommended
+    PSA_monitoring: required
+    testosterone_monitoring: required_on_ADT

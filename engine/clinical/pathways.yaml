@@ -1,0 +1,298 @@
+# clinical/pathways.yaml — Zyphraxis Clinical Pathway Rules
+#
+# Phase 6A — Policy & Constraint Foundation
+# Version: 6.0.0
+#
+# PolicyEngine reads the `policy` section to produce structured option lists.
+# ConstraintEngine then filters those options by patient safety profile.
+# PathwayEngine (Phase 5) still reads the `pathways` section — fully backward-compatible.
+#
+# Schema validated at startup via Pydantic (fail-fast).
+
+version: "6.0.0"
+
+# ═══════════════════════════════════════════════════════════════════════════
+# POLICY CATALOGUE — consumed by PolicyEngine (Phase 6A new)
+# ═══════════════════════════════════════════════════════════════════════════
+
+policy:
+
+  lung:
+
+    options_first_line:
+      - regimen: "Osimertinib"
+        line: "first-line"
+        evidence: "FLAURA (NEJM 2018); NCCN NSCLC 2024 Cat 1"
+        tags:
+          driver_type: EGFR
+          CNS_active: true
+          IO: false
+          chemo: false
+        requires:
+          egfr_mutation: true
+
+      - regimen: "Alectinib"
+        line: "first-line"
+        evidence: "ALEX (NEJM 2017); NCCN NSCLC 2024 Cat 1"
+        tags:
+          driver_type: ALK
+          CNS_active: true
+          IO: false
+          chemo: false
+        requires:
+          alk_rearrangement: true
+
+      - regimen: "Entrectinib"
+        line: "first-line"
+        evidence: "STARTRK-2 (Lancet Oncol 2020); NCCN Cat 1"
+        tags:
+          driver_type: ROS1
+          CNS_active: true
+          IO: false
+          chemo: false
+        requires:
+          ros1_fusion: true
+
+      - regimen: "Pembrolizumab monotherapy"
+        line: "first-line"
+        evidence: "KEYNOTE-024 (NEJM 2016); NCCN Cat 1 PD-L1 >= 50%"
+        tags:
+          driver_type: NONE
+          IO: true
+          chemo: false
+          CNS_active: false
+        requires:
+          pd_l1_gte: 50
+          egfr_mutation: false
+          alk_rearrangement: false
+
+      - regimen: "Pembrolizumab + Carboplatin + Pemetrexed"
+        line: "first-line"
+        evidence: "KEYNOTE-189 (NEJM 2018); NCCN Cat 1 non-squamous"
+        tags:
+          driver_type: NONE
+          IO: true
+          chemo: true
+          CNS_active: false
+        requires:
+          egfr_mutation: false
+          alk_rearrangement: false
+
+      - regimen: "Carboplatin + Paclitaxel + Bevacizumab"
+        line: "first-line"
+        evidence: "E4599 (NEJM 2006); NCCN Cat 1 non-squamous"
+        tags:
+          driver_type: NONE
+          IO: false
+          chemo: true
+          CNS_active: false
+        requires:
+          egfr_mutation: false
+          alk_rearrangement: false
+
+      - regimen: "Cisplatin + Pemetrexed"
+        line: "first-line"
+        evidence: "Scagliotti et al. (JCO 2008); NCCN Cat 1 non-squamous"
+        tags:
+          driver_type: NONE
+          IO: false
+          chemo: true
+          contains_cisplatin: true
+          CNS_active: false
+        requires:
+          egfr_mutation: false
+          alk_rearrangement: false
+
+    options_progression:
+      - regimen: "Osimertinib (T790M+)"
+        line: "progression"
+        evidence: "AURA3 (NEJM 2017); T790M resistance required"
+        tags:
+          driver_type: EGFR
+          CNS_active: true
+          IO: false
+          chemo: false
+        requires:
+          egfr_t790m: true
+
+      - regimen: "Lorlatinib"
+        line: "progression"
+        evidence: "CROWN (NEJM 2020); post-alectinib/crizotinib ALK"
+        tags:
+          driver_type: ALK
+          CNS_active: true
+          IO: false
+          chemo: false
+        requires:
+          alk_rearrangement: true
+
+      - regimen: "Docetaxel + Ramucirumab"
+        line: "progression"
+        evidence: "REVEL (Lancet 2014); NCCN Cat 1 second-line"
+        tags:
+          driver_type: NONE
+          IO: false
+          chemo: true
+          CNS_active: false
+
+      - regimen: "Docetaxel monotherapy"
+        line: "progression"
+        evidence: "TAX 317 (JCO 2000); NCCN Cat 1 second-line"
+        tags:
+          driver_type: NONE
+          IO: false
+          chemo: true
+          CNS_active: false
+
+      - regimen: "Atezolizumab"
+        line: "progression"
+        evidence: "OAK (Lancet 2016); PD-L1 any, post-platinum"
+        tags:
+          driver_type: NONE
+          IO: true
+          chemo: false
+          CNS_active: false
+
+# ═══════════════════════════════════════════════════════════════════════════
+# PATHWAY ENRICHMENT RULES — consumed by PathwayEngine (Phase 5 backward-compatible)
+# ═══════════════════════════════════════════════════════════════════════════
+
+pathways:
+
+  lung:
+    - id: lung_egfr_firstline
+      description: "EGFR-mutated NSCLC, first-line — boost Osimertinib effectiveness"
+      conditions:
+        - field: mutation
+          op: eq
+          value: "EGFR"
+        - field: line
+          op: eq
+          value: 1
+      action:
+        effectiveness_multiplier: 1.30
+        risk_multiplier: 0.92
+      applies_to:
+        - "Osimertinib"
+      tag: pathway_lung_egfr_1l
+
+    - id: lung_egfr_progression
+      description: "EGFR progression — resistance testing required before next-line"
+      conditions:
+        - field: mutation
+          op: eq
+          value: "EGFR"
+        - field: progression
+          op: eq
+          value: true
+        - field: line
+          op: gte
+          value: 2
+      action:
+        effectiveness_multiplier: 0.90
+        risk_multiplier: 1.10
+      applies_to: []
+      tag: pathway_lung_egfr_resistance_testing_required
+
+    - id: lung_pdl1_high_firstline
+      description: "PD-L1 >=50%, first-line — boost pembrolizumab monotherapy"
+      conditions:
+        - field: pdl1
+          op: gte
+          value: 50
+        - field: line
+          op: eq
+          value: 1
+      action:
+        effectiveness_multiplier: 1.25
+        risk_multiplier: 0.95
+      applies_to:
+        - "Pembrolizumab mono"
+      tag: pathway_lung_pdl1_high_1l
+
+    - id: lung_alk_firstline
+      description: "ALK-rearranged NSCLC, first-line — boost Alectinib"
+      conditions:
+        - field: mutation
+          op: eq
+          value: "ALK"
+        - field: line
+          op: eq
+          value: 1
+      action:
+        effectiveness_multiplier: 1.28
+        risk_multiplier: 0.90
+      applies_to:
+        - "Alectinib"
+      tag: pathway_lung_alk_1l
+
+    - id: lung_alk_progression_lorlatinib
+      description: "ALK progression post-alectinib — flag lorlatinib consideration"
+      conditions:
+        - field: mutation
+          op: eq
+          value: "ALK"
+        - field: progression
+          op: eq
+          value: true
+        - field: line
+          op: gte
+          value: 2
+      action:
+        effectiveness_multiplier: 0.75
+        risk_multiplier: 1.15
+      applies_to:
+        - "Alectinib"
+        - "Crizotinib"
+      tag: pathway_lung_alk_lorlatinib_indicated
+
+  prostate:
+    - id: prostate_mhspc_intensification
+      description: "mHSPC — intensify beyond ADT monotherapy per LATITUDE/ARCHES"
+      conditions:
+        - field: disease_state
+          op: eq
+          value: "mHSPC"
+        - field: line
+          op: eq
+          value: 1
+      action:
+        effectiveness_multiplier: 1.20
+        risk_multiplier: 0.95
+      applies_to:
+        - "ADT + Abiraterone"
+        - "ADT + Enzalutamide"
+      tag: pathway_prostate_mhspc_intensification
+
+    - id: prostate_mcrpc_ar_pathway
+      description: "mCRPC first-line — AR-pathway agents preferred per PREVAIL/COU-AA-302"
+      conditions:
+        - field: disease_state
+          op: eq
+          value: "mCRPC"
+        - field: line
+          op: eq
+          value: 1
+      action:
+        effectiveness_multiplier: 1.15
+        risk_multiplier: 0.97
+      applies_to:
+        - "Abiraterone (mCRPC"
+        - "Enzalutamide (mCRPC"
+      tag: pathway_prostate_mcrpc_1l_ar_preferred
+
+    - id: prostate_brca_olaparib
+      description: "BRCA-mutated mCRPC — olaparib preferred per PROfound"
+      conditions:
+        - field: mutation
+          op: eq
+          value: "BRCA"
+        - field: disease_state
+          op: eq
+          value: "mCRPC"
+      action:
+        effectiveness_multiplier: 1.40
+        risk_multiplier: 0.88
+      applies_to:
+        - "Olaparib"
+      tag: pathway_prostate_brca_olaparib_preferred

@@ -1,0 +1,104 @@
+# clinical/cancers/breast/pathways.yaml — Breast Cancer Clinical Pathways
+# Namespace: breast
+# Phase 7A — isolated from all other cancer modules
+# Research use only. Not a licensed medical device.
+
+version: "7.0.0"
+cancer: breast
+
+breast:
+  metastatic:
+    first_line:
+      HER2+:
+        regimen: "Trastuzumab + Pertuzumab + Docetaxel"
+        evidence: "CLEOPATRA (NEJM 2012)"
+        nccn_category: "1"
+        note: "Dual HER2 blockade standard of care for HER2+ mBC"
+
+      ER+:
+        regimen: "Letrozole + Palbociclib"
+        evidence: "PALOMA-2 (NEJM 2016)"
+        nccn_category: "1"
+        note: "CDK4/6 inhibitor + aromatase inhibitor for ER+/HER2- mBC"
+
+      TNBC:
+        pdl1_positive:
+          regimen: "Pembrolizumab + Nab-Paclitaxel"
+          evidence: "KEYNOTE-355 (Lancet 2022)"
+          nccn_category: "1"
+          pdl1_threshold_cps: 10
+        pdl1_negative:
+          regimen: "Nab-Paclitaxel"
+          evidence: "NCCN TNBC Guidelines"
+          nccn_category: "1"
+
+    second_line:
+      HER2+:
+        regimen: "T-DM1 (Ado-Trastuzumab Emtansine)"
+        evidence: "EMILIA (NEJM 2012)"
+        nccn_category: "1"
+
+      ER+:
+        regimen: "Fulvestrant + Abemaciclib"
+        evidence: "MONARCH-2 (JCO 2017)"
+        nccn_category: "1"
+        note: "After progression on prior CDK4/6 + AI"
+
+      TNBC:
+        regimen: "Sacituzumab Govitecan"
+        evidence: "ASCENT (NEJM 2021)"
+        nccn_category: "1"
+
+    # PHASE 10: Third-line options (Fix Issue 3) — correctly indented under metastatic
+    third_line:
+      HER2+:
+        options:
+          - regimen: "T-DM1 (Ado-trastuzumab emtansine)"
+            evidence: "EMILIA (NEJM 2012; DOI:10.1056/NEJMoa1112836)"
+            nccn_category: "1A"
+            orr: 0.43
+            required_biomarkers: {HER2: positive, prior_trastuzumab: any}
+            note: "3L HER2+ after trastuzumab + taxane. Cardiac monitoring required."
+          - regimen: "T-DXd (Trastuzumab deruxtecan)"
+            evidence: "DESTINY-Breast03 (NEJM 2022; DOI:10.1056/NEJMoa2203690)"
+            nccn_category: "1A"
+            orr: 0.55
+            required_biomarkers: {HER2: positive}
+            note: "NextGen ADC. ILD risk 13%. LVEF monitoring required."
+      TNBC:
+        options:
+          - regimen: "Sacituzumab govitecan (Trodelvy)"
+            evidence: "ASCEND-2 (NEJM 2023; DOI:10.1056/NEJMoa2211948)"
+            nccn_category: "1B"
+            orr: 0.35
+            required_biomarkers: {TROP2: positive}
+            note: "Anti-TROP2 ADC. Neutropenia and diarrhea monitoring."
+          - regimen: "Capecitabine monotherapy"
+            evidence: "Breast cancer chemotherapy consensus"
+            nccn_category: "2B"
+            orr: 0.20
+            required_biomarkers: {}
+            note: "Oral salvage. DPD deficiency screening recommended."
+
+  early_stage:
+    neoadjuvant:
+      HER2+:
+        regimen: "TCH + Pertuzumab (TCHP)"
+        evidence: "NeoSphere (Lancet Oncol 2012)"
+      ER+:
+        regimen: "Endocrine therapy +/- CDK4/6"
+        evidence: "NCCN guidelines"
+      TNBC:
+        regimen: "Carboplatin + Paclitaxel + Pembrolizumab"
+        evidence: "KEYNOTE-522 (NEJM 2020)"
+
+  subtype_constraints:
+    HER2+:
+      required_biomarker: "HER2 IHC 3+ or FISH amplified"
+      cardiotoxicity_monitoring: required
+    ER+:
+      required_biomarker: "ER >=1%"
+      bone_density_monitoring: recommended
+    TNBC:
+      required_biomarker: "ER- PR- HER2-"
+      brca_testing: recommended
