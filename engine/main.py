@@ -26,7 +26,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Any, Dict, List, Optional
@@ -257,23 +257,21 @@ if __name__ == "__main__":
         print(f"\n{'='*70}")
         print(CDSS_DISCLAIMER)
         print(f"{'='*70}\n")
-import httpx
-
-class ProxyRequest(BaseModel):
-    payload: Dict[str, Any]
-    api_key: str
-
+      
 @app.post("/proxy/anthropic", tags=["system"])
-async def proxy_anthropic(request: ProxyRequest):
+async def proxy_anthropic(request: Request):
+    import httpx
+    body = await request.json()
+    api_key = request.headers.get("x-api-key", "")
     async with httpx.AsyncClient() as client:
         resp = await client.post(
             "https://api.anthropic.com/v1/messages",
             headers={
                 "Content-Type": "application/json",
-                "x-api-key": request.api_key,
+                "x-api-key": api_key,
                 "anthropic-version": "2023-06-01"
             },
-            json=request.payload,
+            json=body,
             timeout=30.0
         )
         return resp.json()
