@@ -429,7 +429,7 @@ Rules:
 - If cancer type not lung/breast/colorectal, default to lung
 - For "second line" or "2nd line", set line to 2`;
 
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+  const resp = await fetch('https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({
@@ -467,7 +467,7 @@ Schema:
   "confidence_note": "brief note about confidence level"
 }`;
 
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+  const resp = await fetch('https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({
@@ -503,7 +503,7 @@ Rules:
   const msgs = history.map(h => ({ role: h.role, content: h.content }));
   msgs.push({ role: 'user', content: question });
 
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+  const resp = await fetch('https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, system: systemPrompt, messages: msgs })
@@ -592,7 +592,7 @@ Apply these rules exactly as the engine does:
 - Neuropathy G2+: exclude platinum
 - Apply eligibility gates strictly`;
 
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+  const resp = await fetch('https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: enginePrompt }] })
