@@ -257,3 +257,23 @@ if __name__ == "__main__":
         print(f"\n{'='*70}")
         print(CDSS_DISCLAIMER)
         print(f"{'='*70}\n")
+import httpx
+
+class ProxyRequest(BaseModel):
+    payload: Dict[str, Any]
+    api_key: str
+
+@app.post("/proxy/anthropic", tags=["system"])
+async def proxy_anthropic(request: ProxyRequest):
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            "https://api.anthropic.com/v1/messages",
+            headers={
+                "Content-Type": "application/json",
+                "x-api-key": request.api_key,
+                "anthropic-version": "2023-06-01"
+            },
+            json=request.payload,
+            timeout=30.0
+        )
+        return resp.json()
