@@ -517,7 +517,7 @@ Rules:
 async function runEngine(patientSchema) {
   // Try local server first (if running python zyphraxis_phase8_server.py)
   try {
-    const r = await fetch('https://affectionate-illumination-production-276e.up.railway.app/phase6/decide, {
+    const r = await fetch('https://affectionate-illumination-production-276e.up.railway.app/phase6/decide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(patientSchema),
