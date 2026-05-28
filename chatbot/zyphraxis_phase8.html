@@ -521,7 +521,7 @@ async function runEngine(patientSchema) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(patientSchema),
-      signal: AbortSignal.timeout(3000)
+      signal: AbortSignal.timeout(15000)
     });
     if (r.ok) {
       const d = await r.json();
