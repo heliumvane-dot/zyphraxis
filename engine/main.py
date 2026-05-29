@@ -260,18 +260,16 @@ if __name__ == "__main__":
       
 @app.post("/proxy/anthropic", tags=["system"])
 async def proxy_anthropic(request: Request):
-    import httpx
+    import anthropic
     body = await request.json()
     api_key = request.headers.get("x-api-key", "")
-    async with httpx.AsyncClient() as client:
-        resp = await client.post(
-            "https://api.anthropic.com/v1/messages",
-            headers={
-                "Content-Type": "application/json",
-                "x-api-key": api_key,
-                "anthropic-version": "2023-06-01"
-            },
-            json=body,
-            timeout=30.0
-        )
-        return resp.json()
+    client = anthropic.Anthropic(api_key=api_key)
+    model = body.get("model", "claude-sonnet-4-5")
+    max_tokens = body.get("max_tokens", 1000)
+    messages = body.get("messages", [])
+    system = body.get("system", None)
+    kwargs = dict(model=model, max_tokens=max_tokens, messages=messages)
+    if system:
+        kwargs["system"] = system
+    response = client.messages.create(**kwargs)
+    return response.model_dump()
