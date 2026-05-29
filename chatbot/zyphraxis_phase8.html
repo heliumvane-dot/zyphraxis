@@ -433,7 +433,7 @@ Rules:
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 800,
       system: systemPrompt,
       messages: [{ role: 'user', content: doctorText }]
@@ -471,7 +471,7 @@ Schema:
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 1000,
       system: systemPrompt,
       messages: [{ role: 'user', content: `Patient: ${JSON.stringify(patientSchema)}\n\nEngine output:\n${rawOutput}` }]
@@ -506,7 +506,7 @@ Rules:
   const resp = await fetch('https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 600, system: systemPrompt, messages: msgs })
+    body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 600, system: systemPrompt, messages: msgs })
   });
   const data = await resp.json();
   return data.content[0].text;
@@ -595,7 +595,7 @@ Apply these rules exactly as the engine does:
   const resp = await fetch('https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2000, messages: [{ role: 'user', content: enginePrompt }] })
+    body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 2000, messages: [{ role: 'user', content: enginePrompt }] })
   });
   const data = await resp.json();
   return { output: data.content[0].text, source: 'claude_engine_simulation' };
