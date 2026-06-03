@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Zyphraxis Phase 8 — Clinical Copilot</title>
+<title>Zyphraxis — Clinical Copilot</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -24,28 +24,17 @@
   --red-light:#FCEBEB;
   --blue:#185FA5;
   --blue-light:#E6F1FB;
+  --purple:#6B3FA0;
+  --purple-light:#F0EAF8;
   --radius:8px;
   --radius-lg:12px;
 }
 @media(prefers-color-scheme:dark){
   :root{
-    --bg:#151412;
-    --panel:#1C1A17;
-    --card:#222019;
-    --border:#2E2C28;
-    --border-md:#3E3C37;
-    --text:#F0EDE6;
-    --muted:#9A9791;
-    --hint:#5E5C58;
-    --teal:#5DCAA5;
-    --teal-light:#04342C;
-    --teal-mid:#1D9E75;
-    --amber:#EF9F27;
-    --amber-light:#412402;
-    --red:#F09595;
-    --red-light:#501313;
-    --blue:#85B7EB;
-    --blue-light:#042C53;
+    --bg:#151412;--panel:#1C1A17;--card:#222019;--border:#2E2C28;--border-md:#3E3C37;
+    --text:#F0EDE6;--muted:#9A9791;--hint:#5E5C58;--teal:#5DCAA5;--teal-light:#04342C;
+    --teal-mid:#1D9E75;--amber:#EF9F27;--amber-light:#412402;--red:#F09595;--red-light:#501313;
+    --blue:#85B7EB;--blue-light:#042C53;--purple:#C49EE8;--purple-light:#2A1A42;
   }
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;}
@@ -74,6 +63,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* LEFT PANEL */
 #left{width:230px;flex-shrink:0;background:var(--panel);border-right:0.5px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;padding-bottom:12px;}
 .sec-label{font-size:10px;font-weight:600;color:var(--hint);text-transform:uppercase;letter-spacing:0.07em;padding:14px 14px 6px;}
+
+/* MODE TABS - now 3 modes */
+#mode-selector{margin:4px 10px;display:flex;gap:4px;}
+.mode-btn{flex:1;font-size:10px;padding:5px 3px;border:0.5px solid var(--border-md);border-radius:var(--radius);background:var(--panel);color:var(--muted);cursor:pointer;text-align:center;transition:all 0.15s;font-family:inherit;}
+.mode-btn.active-treat{background:var(--teal-light);border-color:var(--teal);color:var(--teal);font-weight:600;}
+.mode-btn.active-chat{background:var(--purple-light);border-color:var(--purple);color:var(--purple);font-weight:600;}
+.mode-btn.active-strat{background:var(--amber-light);border-color:var(--amber);color:var(--amber);font-weight:600;}
+
 #patient-card{margin:0 10px 8px;background:var(--card);border:0.5px solid var(--border-md);border-radius:var(--radius-lg);padding:12px;}
 .pat-name{font-size:13px;font-weight:600;margin-bottom:2px;}
 .pat-meta{font-size:11px;color:var(--muted);margin-bottom:10px;}
@@ -114,6 +111,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 #chat-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 #chat-header{padding:11px 16px;background:var(--card);border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
 #chat-header h2{font-size:13px;font-weight:600;}
+#mode-indicator{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500;}
+.mi-treat{background:var(--teal-light);color:var(--teal);}
+.mi-chat{background:var(--purple-light);color:var(--purple);}
+.mi-strat{background:var(--amber-light);color:var(--amber);}
 #session-time{font-size:11px;color:var(--muted);}
 
 #messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:16px;scroll-behavior:smooth;}
@@ -125,15 +126,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
 .msg.doctor .avatar{background:var(--blue-light);color:var(--blue);}
 .msg.system .avatar{background:var(--teal-light);color:var(--teal);}
-.msg-body{max-width:80%;}
+.msg.system.chat-mode .avatar{background:var(--purple-light);color:var(--purple);}
+.msg.system.strat-mode .avatar{background:var(--amber-light);color:var(--amber);}
+.msg-body{max-width:82%;}
 .msg.doctor .msg-body{display:flex;flex-direction:column;align-items:flex-end;}
 
 .bubble{padding:10px 14px;border-radius:var(--radius-lg);font-size:13px;line-height:1.65;}
 .msg.doctor .bubble{background:var(--blue-light);color:var(--blue);border-bottom-right-radius:4px;}
 .msg.system .bubble{background:var(--card);border:0.5px solid var(--border);color:var(--text);border-bottom-left-radius:4px;}
+.msg.system.chat-mode .bubble{border-color:var(--purple);border-width:0.5px;}
+.msg.system.strat-mode .bubble{border-color:var(--amber);border-width:0.5px;}
 
 .msg-time{font-size:10px;color:var(--hint);margin-top:4px;padding:0 2px;}
 .msg.doctor .msg-time{text-align:right;}
+
+/* CLARIFICATION BOX */
+.clarify-box{background:var(--amber-light);border:0.5px solid var(--amber);border-radius:var(--radius-lg);padding:12px 14px;font-size:13px;}
+.clarify-title{font-weight:600;color:var(--amber);margin-bottom:8px;font-size:12px;}
+.clarify-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.clarify-btn{font-size:11px;padding:5px 12px;border-radius:99px;border:0.5px solid var(--amber);background:var(--card);color:var(--amber);cursor:pointer;transition:all 0.15s;font-family:inherit;}
+.clarify-btn:hover{background:var(--amber);color:#fff;}
 
 /* STRUCTURED OUTPUT */
 .so{background:var(--card);border:0.5px solid var(--border-md);border-radius:var(--radius-lg);overflow:hidden;max-width:100%;font-size:13px;}
@@ -167,26 +179,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 #quick-prompts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px;}
 .qp{font-size:11px;padding:4px 11px;border-radius:99px;border:0.5px solid var(--border-md);background:var(--panel);color:var(--text);cursor:pointer;font-family:inherit;transition:all 0.15s;}
 .qp:hover{background:var(--teal-light);border-color:var(--teal);color:var(--teal);}
+.qp.chat-qp:hover{background:var(--purple-light);border-color:var(--purple);color:var(--purple);}
+.qp.strat-qp:hover{background:var(--amber-light);border-color:var(--amber);color:var(--amber);}
 #input-row{display:flex;gap:8px;align-items:flex-end;}
 #ta{flex:1;resize:none;height:42px;min-height:42px;max-height:130px;padding:10px 13px;font-size:13px;font-family:inherit;border:0.5px solid var(--border-md);border-radius:var(--radius-lg);background:var(--panel);color:var(--text);line-height:1.4;transition:border-color 0.15s;}
 #ta:focus{outline:none;border-color:var(--teal);}
+#ta.chat-focus:focus{border-color:var(--purple);}
+#ta.strat-focus:focus{border-color:var(--amber);}
 #ta::placeholder{color:var(--hint);}
 #send-btn{width:42px;height:42px;border-radius:10px;background:var(--teal);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s,transform 0.1s;}
 #send-btn:hover{background:#085041;}
+#send-btn.chat-btn{background:var(--purple);}
+#send-btn.chat-btn:hover{background:#4a2a75;}
+#send-btn.strat-btn{background:var(--amber);}
+#send-btn.strat-btn:hover{background:#8a5510;}
 #send-btn:active{transform:scale(0.95);}
 #send-btn svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-#send-btn.loading{background:#9FE1CB;pointer-events:none;}
+#send-btn.loading{opacity:0.5;pointer-events:none;}
 
 /* SAFETY FOOTER */
 #footer{background:var(--red-light);border-top:0.5px solid var(--red);padding:6px 16px;font-size:11px;color:var(--red);display:flex;align-items:center;gap:7px;flex-shrink:0;}
-
-/* API KEY NOTICE */
-#api-notice{background:var(--amber-light);border:0.5px solid var(--amber);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--amber);margin:12px;line-height:1.5;}
-
-/* ENGINE MODE SELECTOR */
-#mode-selector{margin:4px 10px;display:flex;gap:4px;}
-.mode-btn{flex:1;font-size:11px;padding:5px;border:0.5px solid var(--border-md);border-radius:var(--radius);background:var(--panel);color:var(--muted);cursor:pointer;text-align:center;transition:all 0.15s;font-family:inherit;}
-.mode-btn.active{background:var(--teal-light);border-color:var(--teal);color:var(--teal);font-weight:600;}
 </style>
 </head>
 <body>
@@ -199,7 +211,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
     <div id="logo-text">
       <h1>Zyphraxis</h1>
-      <span>Phase 8 — Clinical Copilot</span>
+      <span>Phase 9 — Clinical Copilot</span>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:10px;flex:1;justify-content:center;">
@@ -221,8 +233,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div id="left">
     <div class="sec-label">Mode</div>
     <div id="mode-selector">
-      <button class="mode-btn active" id="mode-chat" onclick="setMode('chat')">Chat</button>
-      <button class="mode-btn" id="mode-direct" onclick="setMode('direct')">Direct schema</button>
+      <button class="mode-btn active-treat" id="mode-treat" onclick="setMode('treat')">🧬 Treatment</button>
+      <button class="mode-btn" id="mode-chat" onclick="setMode('chat')">💬 Chat</button>
+      <button class="mode-btn" id="mode-strat" onclick="setMode('strat')">🗺 Strategy</button>
     </div>
 
     <div class="sec-label" style="margin-top:6px;">Active patient</div>
@@ -241,9 +254,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div id="biomarkers"><span style="font-size:11px;color:var(--hint);padding-left:2px;">Awaiting patient data</span></div>
 
     <div class="sec-label" style="margin-top:6px;">Safety flags</div>
-    <div id="safety-box">
-      <div class="sb-title">⚠ No flags yet</div>
-    </div>
+    <div id="safety-box"><div class="sb-title">⚠ No flags yet</div></div>
 
     <div class="sec-label" style="margin-top:6px;">Engine confidence</div>
     <div id="conf-box">
@@ -262,21 +273,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     </div>
   </div>
 
-  <!-- CHAT -->
+  <!-- CHAT AREA -->
   <div id="chat-wrap">
     <div id="chat-header">
       <h2>Clinical reasoning session</h2>
-      <span id="session-time">Session 00:00</span>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span id="mode-indicator" class="mi-treat">🧬 Treatment Engine</span>
+        <span id="session-time">Session 00:00</span>
+      </div>
     </div>
 
-    <div id="messages" aria-live="polite" aria-label="Clinical session messages">
+    <div id="messages" aria-live="polite">
       <div class="msg system">
         <div class="avatar">Zx</div>
         <div class="msg-body">
           <div class="bubble">
-            Zyphraxis Phase 8 clinical copilot is ready.<br><br>
-            Describe your patient in plain language — cancer type, stage, biomarkers, organ function, line of therapy — and the real Zyphraxis engine will run and return a structured recommendation.<br><br>
-            <strong>Enter your Anthropic API key</strong> in the top-right to activate natural language parsing. Or switch to <em>Direct schema</em> mode on the left to enter patient data manually.
+            <strong>Zyphraxis Phase 9 clinical copilot is ready.</strong><br><br>
+            You have <strong>3 modes</strong> — switch using the left panel:<br><br>
+            🧬 <strong>Treatment</strong> — Structured drug recommendation with Apollo/Manhattan engine, safety flags, trial evidence<br><br>
+            💬 <strong>Chat</strong> — Free conversation with Claude. Ask anything: drug mechanisms, trial data, dosing, drug interactions, general oncology Q&A<br><br>
+            🗺 <strong>Strategy</strong> — Think through a clinical case before running the engine. Discuss approach, weigh options, explore what-ifs<br><br>
+            Enter your Anthropic API key top-right to begin.
           </div>
           <div class="msg-time" id="t-welcome"></div>
         </div>
@@ -285,13 +302,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
     <div id="input-area">
       <div id="quick-prompts">
-        <button class="qp" onclick="qp('Stage IV NSCLC, EGFR positive, first line, ECOG 1, CrCl 85')">EGFR+ 1L NSCLC ↗</button>
-        <button class="qp" onclick="qp('Lung cancer stage IV, PD-L1 75%, no driver mutation, second line, CrCl 48, ECOG 1')">PD-L1 high 2L ↗</button>
-        <button class="qp" onclick="qp('NSCLC stage IV, ALK positive, brain metastases, first line, ECOG 1, CrCl 88')">ALK+ brain mets ↗</button>
-        <button class="qp" onclick="qp('T790M resistance mutation, EGFR+, second line progression, CrCl 75, ECOG 1')">T790M progression ↗</button>
+        <button class="qp" id="qp1" onclick="qp('Stage IV NSCLC, EGFR positive, first line, ECOG 1, CrCl 85')">EGFR+ 1L NSCLC ↗</button>
+        <button class="qp" id="qp2" onclick="qp('NSCLC stage IV, ALK positive, brain metastases, first line, ECOG 1, CrCl 88')">ALK+ brain mets ↗</button>
+        <button class="qp" id="qp3" onclick="qp('T790M resistance mutation, EGFR+, second line progression, CrCl 75, ECOG 1')">T790M progression ↗</button>
       </div>
       <div id="input-row">
-        <textarea id="ta" placeholder="Describe your patient in plain language, or ask about rationale, exclusions, alternatives..." rows="1"></textarea>
+        <textarea id="ta" placeholder="Describe your patient or ask a question..." rows="1"></textarea>
         <button id="send-btn" onclick="handleSend()">
           <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
@@ -302,255 +318,192 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       🔒 Zyphraxis outputs are clinical reasoning support only. All decisions require oncologist authority. SAF safeguards cannot be bypassed.
     </div>
   </div>
-
 </div>
 
 <script>
-// ─── State ────────────────────────────────────────────────────────────────────
+const PROXY = 'https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic';
+const MODEL = 'claude-sonnet-4-5';
+
 let ANTHROPIC_KEY = localStorage.getItem('zx_api_key') || '';
 let sessionStart = Date.now();
 let currentPatient = null;
 let conversationHistory = [];
-let appMode = 'chat';
+let chatHistory = [];
+let stratHistory = [];
+let appMode = 'treat';
+let lastEngineOutput = null;
+let awaitingEGFRClarification = false;
+let pendingPatientText = '';
 
-// Pre-fill key if stored
 if (ANTHROPIC_KEY) {
   document.getElementById('api-input').value = ANTHROPIC_KEY;
   document.getElementById('api-save').textContent = 'Connected ✓';
-  document.getElementById('api-save').style.background = 'var(--teal)';
-  document.getElementById('api-save').style.color = '#fff';
+  document.getElementById('api-save').style.cssText = 'background:var(--teal);color:#fff;';
 }
-
 document.getElementById('t-welcome').textContent = getTime();
 
-// ─── Session Timer ────────────────────────────────────────────────────────────
 setInterval(() => {
-  const e = Math.floor((Date.now() - sessionStart) / 1000);
-  const m = Math.floor(e / 60).toString().padStart(2,'0');
-  const s = (e % 60).toString().padStart(2,'0');
+  const e = Math.floor((Date.now()-sessionStart)/1000);
+  const m = Math.floor(e/60).toString().padStart(2,'0');
+  const s = (e%60).toString().padStart(2,'0');
   document.getElementById('session-time').textContent = `Session ${m}:${s}`;
-}, 1000);
+},1000);
 
-function getTime() {
-  const d = new Date();
-  return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+function getTime(){
+  const d=new Date();
+  return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
 }
 
-function saveKey() {
-  const v = document.getElementById('api-input').value.trim();
-  if (!v.startsWith('sk-ant-')) { alert('Invalid key format. Should start with sk-ant-'); return; }
-  ANTHROPIC_KEY = v;
-  localStorage.setItem('zx_api_key', v);
-  document.getElementById('api-save').textContent = 'Connected ✓';
-  document.getElementById('api-save').style.background = 'var(--teal)';
-  document.getElementById('api-save').style.color = '#fff';
+function saveKey(){
+  const v=document.getElementById('api-input').value.trim();
+  if(!v.startsWith('sk-ant-')){alert('Invalid key. Should start with sk-ant-');return;}
+  ANTHROPIC_KEY=v;
+  localStorage.setItem('zx_api_key',v);
+  document.getElementById('api-save').textContent='Connected ✓';
+  document.getElementById('api-save').style.cssText='background:var(--teal);color:#fff;';
 }
 
-function setMode(m) {
-  appMode = m;
-  document.getElementById('mode-chat').className = 'mode-btn' + (m==='chat'?' active':'');
-  document.getElementById('mode-direct').className = 'mode-btn' + (m==='direct'?' active':'');
-  if (m === 'direct') showDirectSchemaPrompt();
+function setMode(m){
+  appMode=m;
+  // Update buttons
+  document.getElementById('mode-treat').className='mode-btn'+(m==='treat'?' active-treat':'');
+  document.getElementById('mode-chat').className='mode-btn'+(m==='chat'?' active-chat':'');
+  document.getElementById('mode-strat').className='mode-btn'+(m==='strat'?' active-strat':'');
+  // Update header indicator
+  const ind=document.getElementById('mode-indicator');
+  if(m==='treat'){ind.className='mi-treat';ind.textContent='🧬 Treatment Engine';}
+  else if(m==='chat'){ind.className='mi-chat';ind.textContent='💬 Free Chat';}
+  else{ind.className='mi-strat';ind.textContent='🗺 Strategy Planner';}
+  // Update send button color
+  const btn=document.getElementById('send-btn');
+  btn.className=m==='chat'?'chat-btn':m==='strat'?'strat-btn':'';
+  // Update textarea focus class
+  const ta=document.getElementById('ta');
+  ta.className=m==='chat'?'chat-focus':m==='strat'?'strat-focus':'';
+  // Update quick prompts
+  updateQuickPrompts(m);
+  // Update placeholder
+  if(m==='treat') ta.placeholder='Describe your patient — cancer type, stage, biomarkers, line, ECOG, CrCl...';
+  else if(m==='chat') ta.placeholder='Ask anything — drug mechanisms, dosing, trial data, interactions...';
+  else ta.placeholder='Describe a case to discuss strategy before running the engine...';
 }
 
-// ─── Message helpers ──────────────────────────────────────────────────────────
-function addMsg(who, content, isHTML, time) {
-  const msgs = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = `msg ${who}`;
-  const av = who === 'doctor'
-    ? '<div class="avatar" style="background:var(--blue-light);color:var(--blue)">DR</div>'
-    : '<div class="avatar">Zx</div>';
-  const inner = isHTML
-    ? `<div class="msg-body">${content}<div class="msg-time">${time}${who==='system'?' · Zyphraxis Engine · SAF arbitrated':''}</div></div>`
-    : `<div class="msg-body"><div class="bubble">${content}</div><div class="msg-time">${time}${who==='system'?' · Zyphraxis Engine · SAF arbitrated':''}</div></div>`;
-  div.innerHTML = av + inner;
+function updateQuickPrompts(m){
+  const qp1=document.getElementById('qp1');
+  const qp2=document.getElementById('qp2');
+  const qp3=document.getElementById('qp3');
+  if(m==='treat'){
+    qp1.className='qp'; qp1.textContent='EGFR+ 1L NSCLC ↗'; qp1.onclick=()=>qp('Stage IV NSCLC, EGFR positive, first line, ECOG 1, CrCl 85');
+    qp2.className='qp'; qp2.textContent='ALK+ brain mets ↗'; qp2.onclick=()=>qp('NSCLC stage IV, ALK positive, brain metastases, first line, ECOG 1, CrCl 88');
+    qp3.className='qp'; qp3.textContent='T790M progression ↗'; qp3.onclick=()=>qp('T790M resistance mutation, EGFR+, second line progression, CrCl 75, ECOG 1');
+  } else if(m==='chat'){
+    qp1.className='qp chat-qp'; qp1.textContent='What is Osimertinib? ↗'; qp1.onclick=()=>qp('Explain the mechanism of action of Osimertinib and why it covers T790M resistance');
+    qp2.className='qp chat-qp'; qp2.textContent='FLAURA vs FLAURA2? ↗'; qp2.onclick=()=>qp('What is the difference between FLAURA and FLAURA2 trials? When should I use combo therapy?');
+    qp3.className='qp chat-qp'; qp3.textContent='IO in EGFR+ NSCLC? ↗'; qp3.onclick=()=>qp('Why is immunotherapy generally not recommended for EGFR-mutant NSCLC?');
+  } else {
+    qp1.className='qp strat-qp'; qp1.textContent='EGFR+ no subtype ↗'; qp1.onclick=()=>qp('Patient with EGFR positive NSCLC stage IV, first line. Not sure which mutation subtype. Help me think through this before running the engine.');
+    qp2.className='qp strat-qp'; qp2.textContent='High burden disease ↗'; qp2.onclick=()=>qp('EGFR+ NSCLC with high disease burden, liver metastases. Should I consider escalation to osimertinib + chemo combo?');
+    qp3.className='qp strat-qp'; qp3.textContent='Renal impaired ↗'; qp3.onclick=()=>qp('Patient with CrCl 28, lung cancer. How does severe renal impairment change my treatment options?');
+  }
+}
+
+// ── Message helpers ──────────────────────────────────────────────────────────
+function addMsg(who, content, isHTML, time, modeClass=''){
+  const msgs=document.getElementById('messages');
+  const div=document.createElement('div');
+  div.className=`msg ${who}${modeClass?' '+modeClass:''}`;
+  let avLabel='Zx';
+  if(who==='doctor') avLabel='DR';
+  else if(modeClass==='chat-mode') avLabel='AI';
+  else if(modeClass==='strat-mode') avLabel='Sx';
+  const av=who==='doctor'
+    ?`<div class="avatar" style="background:var(--blue-light);color:var(--blue)">${avLabel}</div>`
+    :`<div class="avatar">${avLabel}</div>`;
+  const suffix=who==='system'&&modeClass===''?' · Zyphraxis Engine · SAF arbitrated'
+    :who==='system'&&modeClass==='chat-mode'?' · Claude AI'
+    :who==='system'&&modeClass==='strat-mode'?' · Strategy Advisor':'';
+  const inner=isHTML
+    ?`<div class="msg-body">${content}<div class="msg-time">${time}${suffix}</div></div>`
+    :`<div class="msg-body"><div class="bubble">${content}</div><div class="msg-time">${time}${suffix}</div></div>`;
+  div.innerHTML=av+inner;
   msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.scrollTop=msgs.scrollHeight;
   return div;
 }
 
-function addTyping() {
-  const msgs = document.getElementById('messages');
-  const div = document.createElement('div');
-  div.className = 'msg system'; div.id = 'typing';
-  div.innerHTML = `<div class="avatar">Zx</div><div class="msg-body"><div class="bubble"><div class="typing-wrap"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`;
+function addTyping(modeClass=''){
+  const msgs=document.getElementById('messages');
+  const div=document.createElement('div');
+  div.className=`msg system${modeClass?' '+modeClass:''}`;
+  div.id='typing';
+  div.innerHTML=`<div class="avatar">${modeClass==='chat-mode'?'AI':modeClass==='strat-mode'?'Sx':'Zx'}</div><div class="msg-body"><div class="bubble"><div class="typing-wrap"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>`;
   msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.scrollTop=msgs.scrollHeight;
 }
 
-function removeTyping() {
-  const el = document.getElementById('typing');
-  if (el) el.remove();
+function removeTyping(){const el=document.getElementById('typing');if(el)el.remove();}
+
+// ── Safety ───────────────────────────────────────────────────────────────────
+const BLOCKED=[/bypass.*saf/i,/override.*safe/i,/prescribe/i,/diagnos/i,/remove.*warning/i,/without.*review/i,/skip.*oncologist/i,/autonomous/i];
+function isBlocked(t){return BLOCKED.some(p=>p.test(t));}
+
+// ── EGFR subtype detection ────────────────────────────────────────────────────
+function needsEGFRClarification(text){
+  const hasEGFR=/egfr.*(positive|pos|\+)/i.test(text)||/(egfr\+|egfr positive)/i.test(text);
+  const hasSubtype=/exon\s*(19|20|21)|l858r|exon20|e19del|del19|ex19|ex20|c797s|g719|s768|l861/i.test(text);
+  return hasEGFR && !hasSubtype;
 }
 
-// ─── Safety check ─────────────────────────────────────────────────────────────
-const BLOCKED_PATTERNS = [/bypass.*saf/i, /override.*safe/i, /prescribe/i, /diagnos/i, /remove.*warning/i, /without.*review/i, /skip.*oncologist/i, /autonomous/i];
-
-function isBlocked(text) {
-  return BLOCKED_PATTERNS.some(p => p.test(text));
-}
-
-// ─── Claude API: parse natural language → patient schema ──────────────────────
-async function parsePatient(doctorText) {
-  const systemPrompt = `You are the Zyphraxis medical entity parser. Convert a doctor's natural language description of an oncology patient into a structured JSON patient schema.
-
-Output ONLY valid JSON, no other text, no markdown backticks.
-
-Required fields and their types:
-{
-  "cancer_type": "lung" | "breast" | "colorectal",
-  "stage": "I" | "II" | "III" | "IIIB" | "IV",
-  "biomarkers": { "EGFR": "positive"/"negative", "ALK": "positive"/"negative", "PD-L1": 0.0-1.0, "T790M": "positive", "ROS1": "positive", "KRAS": "positive" },
-  "driver_mutation": null | "EGFR" | "ALK" | "ROS1" | "KRAS",
-  "mutation": null | "EGFR" | "ALK" | "ROS1" | "KRAS",
-  "resistance_mutation": null | "T790M" | "C797S",
-  "line": 1 | 2 | 3,
-  "ecog_status": 0 | 1 | 2 | 3 | 4,
-  "creatinine_clearance": number (mL/min, e.g. 85.0),
-  "contraindications": [],
-  "brain_mets": true | false,
-  "cns_disease": true | false,
-  "pdl1": null | 0.0-1.0,
-  "disease_burden": null | "low" | "moderate" | "high",
-  "tumor_escape_h": null | number,
-  "_patient_id": "string label for display",
-  "_summary": "one-line summary of patient for display"
-}
-
-Rules:
-- If creatinine clearance or eGFR not mentioned, assume 80.0
-- If ECOG not mentioned, assume 1
-- If stage not mentioned for lung cancer, assume IV
-- If PD-L1 mentioned as percentage like "75%", convert to 0.75
-- If a driver mutation is mentioned as positive, set both driver_mutation and mutation to that value
-- Add the mutation to biomarkers object too
-- Only include biomarkers actually mentioned
-- If cancer type not lung/breast/colorectal, default to lung
-- For "second line" or "2nd line", set line to 2`;
-
-  const resp = await fetch('https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 800,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: doctorText }]
-    })
+// ── API call helper ───────────────────────────────────────────────────────────
+async function callClaude(messages, system, maxTokens=1000){
+  const body={model:MODEL,max_tokens:maxTokens,messages};
+  if(system) body.system=system;
+  const resp=await fetch(PROXY,{
+    method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':ANTHROPIC_KEY,'anthropic-version':'2023-06-01'},
+    body:JSON.stringify(body)
   });
-  const data = await resp.json();
-  if (data.error) throw new Error(data.error.message);
-  const raw = data.content[0].text.trim();
-  return JSON.parse(raw.replace(/```json|```/g, '').trim());
-}
-
-// ─── Claude API: format raw engine output into structured display ──────────────
-async function formatEngineOutput(rawOutput, patientSchema) {
-  const systemPrompt = `You are the Zyphraxis Phase 8 explainability formatter. 
-Convert raw Zyphraxis engine output into a clean structured JSON for display in the clinical copilot UI.
-
-Output ONLY valid JSON, no markdown.
-
-Schema:
-{
-  "context": "one sentence patient summary",
-  "primary_regimen": "drug name exactly as in engine output",
-  "primary_rationale": "2-3 sentences explaining why this was selected",
-  "confidence": number 0-100 (multiply engine confidence 0-1 by 100),
-  "apollo_regimen": "what Apollo mode selected",
-  "manhattan_regimen": "what Manhattan mode selected (rank 1)",
-  "safety_flags": ["list of warning strings from engine"],
-  "exclusions": [{"drug": "name", "reason": "why excluded"}],
-  "alternatives": ["drug1", "drug2"],
-  "evidence": "trial name and basis if mentioned",
-  "confidence_note": "brief note about confidence level"
-}`;
-
-  const resp = await fetch('https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: `Patient: ${JSON.stringify(patientSchema)}\n\nEngine output:\n${rawOutput}` }]
-    })
-  });
-  const data = await resp.json();
-  const raw = data.content[0].text.trim();
-  return JSON.parse(raw.replace(/```json|```/g, '').trim());
-}
-
-// ─── Claude API: answer follow-up questions ───────────────────────────────────
-async function answerFollowUp(question, patientSchema, rawEngineOutput, history) {
-  const systemPrompt = `You are Zyphraxis Phase 8 clinical copilot. You are a reasoning assistant for oncologists — NOT a diagnostic authority.
-
-Current patient: ${JSON.stringify(patientSchema)}
-
-Engine output already generated:
-${rawEngineOutput}
-
-Rules:
-- Answer only about this patient and this engine output
-- If asked to prescribe, diagnose autonomously, or bypass safety — refuse
-- Always end with: oncologist review required
-- Be clinical, concise, structured
-- If asked about exclusion reasons, trace to the engine logic above
-- Confidence scores come from the engine — do not fabricate them
-- Never claim certainty without engine support`;
-
-  const msgs = history.map(h => ({ role: h.role, content: h.content }));
-  msgs.push({ role: 'user', content: question });
-
-  const resp = await fetch('https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 600, system: systemPrompt, messages: msgs })
-  });
-  const data = await resp.json();
+  const data=await resp.json();
+  if(data.error) throw new Error(data.error.message);
   return data.content[0].text;
 }
 
-// ─── Run engine via Claude API (simulates the Python engine using Claude's knowledge of the codebase) ──
-// NOTE: In production this calls your local Python server. For browser demo we use Claude as the engine brain.
-async function runEngine(patientSchema) {
-  // Try local server first (if running python zyphraxis_phase8_server.py)
-  try {
-    throw new Error('skip');
-   
-  } catch(e) { /* local server not running, fall through */ }
+// ── Parse patient ─────────────────────────────────────────────────────────────
+async function parsePatient(text){
+  const sys=`You are the Zyphraxis medical entity parser. Convert a doctor's natural language description into a structured JSON patient schema.
+Output ONLY valid JSON, no markdown backticks.
+Fields: cancer_type("lung"|"breast"|"colorectal"), stage, biomarkers{}, driver_mutation, mutation, resistance_mutation, line(int), ecog_status(int), creatinine_clearance(float), contraindications[], brain_mets(bool), cns_disease(bool), pdl1(float|null), disease_burden, tumor_escape_h, egfr_subtype("exon19del"|"L858R"|"exon20ins"|"other"|null), _patient_id, _summary.
+Rules: default CrCl=80, ECOG=1, stage=IV for lung. Convert PD-L1% to decimal. Set egfr_subtype from text if mentioned.`;
+  const raw=await callClaude([{role:'user',content:text}],sys,900);
+  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+}
 
-  // Fallback: Claude acts as the engine brain using full knowledge of Zyphraxis logic
-  const enginePrompt = `You ARE the Zyphraxis Phase 7 engine. Simulate the full pipeline for this patient.
+// ── Run engine ────────────────────────────────────────────────────────────────
+async function runEngine(schema){
+  const egfrNote=schema.egfr_subtype==='exon20ins'
+    ?'CRITICAL: EGFR Exon 20 insertion — osimertinib is NOT standard. Recommend amivantamab or mobocertinib. Flag this prominently.'
+    :schema.egfr_subtype==='exon19del'?'EGFR Exon 19 deletion confirmed — osimertinib preferred (FLAURA).'
+    :schema.egfr_subtype==='L858R'?'EGFR L858R confirmed — osimertinib preferred (FLAURA), slightly lower benefit vs exon19del.'
+    :'';
 
-You know the exact pipeline:
-PatientSchema → PolicyEngine → ConstraintEngine → ApolloMode → ManhattanMode → HybridEngine → JustificationEngine
+  const prompt=`You ARE the Zyphraxis clinical decision engine. Run the full pipeline for this patient.
+${egfrNote}
+Patient: ${JSON.stringify(schema)}
 
-Patient: ${JSON.stringify(patientSchema)}
-
-Produce output in EXACTLY this format (copy the structure precisely):
-
+Output format:
 ## APOLLO MODE
   Regimen    : [drug]
   Confidence : [0.0-1.0]
   Reason     : [reason]
 
 ## MANHATTAN MODE
-  Regimen    : [drug]  (rank 1 of N)
+  Regimen    : [drug] (rank 1 of N)
   Score      : [number]
-  Pros       : [pros]
-  Cons       : [cons]
+  Pros/Cons  : [brief]
 
 ## HYBRID DECISION
   Regimen    : [drug]
-  Line       : [number]
   Confidence : [0.0-1.0]
-
-### POLICY SPACE
-  • [option1]
-  • [option2] ← SELECTED
-  [etc]
 
 ### FINAL PLAN
   regimen    : [drug]
@@ -559,250 +512,296 @@ Produce output in EXACTLY this format (copy the structure precisely):
 
 ## JUSTIFICATION
 **Why Selected — [drug]**
-  [explanation with trial evidence]
-
-**Why Superior**
-  [comparison to alternatives]
-
-**All Options Considered**
-  [drug1]
-    Considered : [description]
-    Rejected   : [reason or SELECTED]
-  [etc]
+  [trial evidence]
+**Key Exclusions**
+  [drug]: [reason]
 
 ## SAFETY WARNINGS
-  ⚠️  [warning1]
-  ⚠️  [warning2 if any]
+  ⚠️ [warning]
 
-Apply these rules exactly as the engine does:
-- EGFR+: Osimertinib first line (confidence 0.85-0.95)
-- T790M resistance: Osimertinib 2L (confidence 0.90)
-- ALK+: Alectinib, brain mets → prioritise CNS-active
-- PD-L1 ≥50% no driver: Pembrolizumab (IO)
-- PD-L1 <50% no driver: chemo-IO combo or docetaxel+ramucirumab 2L
-- CrCl <60: exclude cisplatin. CrCl <45: exclude pemetrexed
-- Neuropathy G2+: exclude platinum
-- Apply eligibility gates strictly`;
+Rules:
+- EGFR Exon19/L858R 1L: Osimertinib (FLAURA) confidence 0.88-0.95
+- EGFR Exon20ins: Amivantamab or Mobocertinib — NOT osimertinib
+- EGFR high burden 1L: Consider FLAURA2 (osi+chemo) — flag escalation option
+- T790M 2L: Osimertinib (AURA3) confidence 0.90
+- ALK+: Alectinib (ALEX trial); brain mets → CNS-penetrant priority
+- PD-L1≥50% no driver: Pembrolizumab
+- CrCl<60: exclude cisplatin; CrCl<45: exclude pemetrexed
+- Always flag if EGFR subtype unknown`;
 
-  const resp = await fetch('https://affectionate-illumination-production-276e.up.railway.app/proxy/anthropic', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 2000, messages: [{ role: 'user', content: enginePrompt }] })
-  });
-  const data = await resp.json();
-  return { output: data.content[0].text, source: 'claude_engine_simulation' };
+  const output=await callClaude([{role:'user',content:prompt}],null,2200);
+  return {output,source:'claude_engine'};
 }
 
-// ─── Build structured output HTML ─────────────────────────────────────────────
-function buildStructuredOutput(formatted, rawOutput) {
-  const flagsHtml = (formatted.safety_flags || []).map(f =>
-    `<div class="so-flag">⚠ ${escHtml(f)}</div>`).join('');
-  const exclHtml = (formatted.exclusions || []).slice(0,4).map(e =>
-    `<div style="font-size:11px;margin:3px 0;padding-left:8px;border-left:2px solid var(--border-md);color:var(--muted)"><strong style="color:var(--text)">${escHtml(e.drug)}</strong> — ${escHtml(e.reason)}</div>`).join('');
-  const altsHtml = (formatted.alternatives || []).slice(0,5).map(a =>
-    `<span class="so-alt" onclick="askAbout('${escHtml(a).replace(/'/g,"\\'")}')">Explore ${escHtml(a)} ↗</span>`).join('');
-  const toggleId = 'raw-' + Date.now();
-  return `
-    <div class="so">
-      <div class="so-row">
-        <div class="so-head">Clinical context</div>
-        <div class="so-body">${escHtml(formatted.context || '')}</div>
-      </div>
-      <div class="so-row">
-        <div class="so-head">Primary recommendation</div>
-        <div class="so-primary">${escHtml(formatted.primary_regimen || '')}</div>
-        <div class="so-body" style="margin-top:5px;font-size:12px;">${escHtml(formatted.primary_rationale || '')}</div>
-      </div>
-      <div class="so-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div>
-          <div class="so-head">Apollo mode</div>
-          <div class="so-body" style="font-weight:600;">${escHtml(formatted.apollo_regimen || '—')}</div>
-        </div>
-        <div>
-          <div class="so-head">Manhattan mode</div>
-          <div class="so-body" style="font-weight:600;">${escHtml(formatted.manhattan_regimen || '—')}</div>
-        </div>
-      </div>
-      ${flagsHtml ? `<div class="so-row"><div class="so-head" style="color:var(--red)">Safety flags</div>${flagsHtml}</div>` : ''}
-      ${exclHtml ? `<div class="so-row"><div class="so-head">Key exclusions</div>${exclHtml}</div>` : ''}
-      <div class="so-row">
-        <div class="so-head">Confidence</div>
-        <div class="so-body"><strong>${Math.round(formatted.confidence || 0)}%</strong> — ${escHtml(formatted.confidence_note || '')}</div>
-        ${formatted.evidence ? `<div class="so-body" style="font-size:11px;color:var(--muted);margin-top:3px;">${escHtml(formatted.evidence)}</div>` : ''}
-      </div>
-      ${altsHtml ? `<div class="so-row"><div class="so-head">Explore alternatives</div><div class="so-alts">${altsHtml}</div></div>` : ''}
-      <div class="so-row so-bg">
-        <div class="so-head">Requires oncologist review</div>
-        <div><span class="so-badge">⚠ Reasoning support only — oncologist authority required</span></div>
-        <a class="raw-toggle" onclick="toggleRaw('${toggleId}')">View raw engine output</a>
-        <div class="raw-output" id="${toggleId}">${escHtml(rawOutput)}</div>
-      </div>
-    </div>`;
+// ── Format output ─────────────────────────────────────────────────────────────
+async function formatOutput(raw,schema){
+  const sys=`Convert Zyphraxis engine output to JSON for display. Output ONLY valid JSON.
+Schema: {context, primary_regimen, primary_rationale, confidence(0-100), apollo_regimen, manhattan_regimen, safety_flags[], exclusions[{drug,reason}], alternatives[], evidence, confidence_note, egfr_subtype_warning(string|null)}
+If engine mentions Exon 20 insertion or amivantamab, set egfr_subtype_warning to a clear warning string.`;
+  const raw2=await callClaude([{role:'user',content:`Patient:${JSON.stringify(schema)}\nEngine:\n${raw}`}],sys,1100);
+  return JSON.parse(raw2.replace(/```json|```/g,'').trim());
 }
 
-function toggleRaw(id) {
-  const el = document.getElementById(id);
-  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+// ── Chat mode ─────────────────────────────────────────────────────────────────
+async function handleChatMessage(text){
+  chatHistory.push({role:'user',content:text});
+  const sys=`You are Zyphraxis Clinical AI — a knowledgeable oncology assistant for doctors.
+Answer freely about: drug mechanisms, clinical trials, dosing, drug interactions, resistance mechanisms, guidelines, biomarkers, toxicity management.
+Current patient context (if loaded): ${currentPatient?JSON.stringify(currentPatient):'none'}
+Be concise, clinical, evidence-based. Always note "oncologist review required" for patient-specific decisions.
+You are NOT the treatment engine — you are the conversational knowledge layer.`;
+  const answer=await callClaude(chatHistory.slice(-10),sys,800);
+  chatHistory.push({role:'assistant',content:answer});
+  return answer;
 }
 
-function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// ── Strategy mode ─────────────────────────────────────────────────────────────
+async function handleStratMessage(text){
+  stratHistory.push({role:'user',content:text});
+  const sys=`You are Zyphraxis Strategy Advisor — you help oncologists think through complex cases BEFORE running the treatment engine.
+Your job: ask clarifying questions, surface ambiguities, flag missing information, discuss treatment philosophy, help weigh options.
+When EGFR is mentioned without subtype: immediately ask which mutation (Exon 19 del / L858R / Exon 20 insertion / other) — this changes the entire treatment paradigm.
+When case is ready: say "Ready to run the engine? Switch to Treatment mode and paste: [patient description]"
+Current patient: ${currentPatient?JSON.stringify(currentPatient):'none'}`;
+  const answer=await callClaude(stratHistory.slice(-10),sys,900);
+  stratHistory.push({role:'assistant',content:answer});
+  return answer;
 }
 
-// ─── Update left panel ────────────────────────────────────────────────────────
-function updatePanel(schema, formatted) {
-  currentPatient = schema;
-  document.getElementById('p-name').textContent = schema._patient_id || 'Active patient';
-  document.getElementById('p-meta').textContent = schema._summary || '';
-  document.getElementById('p-cancer').textContent = (schema.cancer_type || '—').toUpperCase();
-  document.getElementById('p-stage').textContent = schema.stage || '—';
-  document.getElementById('p-line').textContent = schema.line ? `Line ${schema.line}` : '—';
-  const ecog = schema.ecog_status;
-  const ecogEl = document.getElementById('p-ecog');
-  ecogEl.textContent = ecog !== undefined && ecog !== null ? ecog : '—';
-  ecogEl.className = 'val' + (ecog <= 1 ? ' green' : ecog <= 2 ? ' amber' : ' red');
-  const crcl = schema.creatinine_clearance;
-  const crclEl = document.getElementById('p-crcl');
-  crclEl.textContent = crcl ? `${crcl} mL/min` : '—';
-  crclEl.className = 'val' + (crcl >= 60 ? ' green' : crcl >= 45 ? ' amber' : ' red');
-  document.getElementById('p-brain').textContent = schema.brain_mets ? 'Yes' : 'No';
-  document.getElementById('p-brain').className = 'val' + (schema.brain_mets ? ' red' : ' green');
+// ── Build structured output HTML ──────────────────────────────────────────────
+function buildStructuredOutput(fmt,raw){
+  const flagsHtml=(fmt.safety_flags||[]).map(f=>`<div class="so-flag">⚠ ${escHtml(f)}</div>`).join('');
+  const exclHtml=(fmt.exclusions||[]).slice(0,4).map(e=>`<div style="font-size:11px;margin:3px 0;padding-left:8px;border-left:2px solid var(--border-md);color:var(--muted)"><strong style="color:var(--text)">${escHtml(e.drug)}</strong> — ${escHtml(e.reason)}</div>`).join('');
+  const altsHtml=(fmt.alternatives||[]).slice(0,5).map(a=>`<span class="so-alt" onclick="askAbout('${escHtml(a).replace(/'/g,"\\'")}')">Explore ${escHtml(a)} ↗</span>`).join('');
+  const toggleId='raw-'+Date.now();
+  const egfrWarn=fmt.egfr_subtype_warning?`<div class="so-flag" style="background:var(--red-light);font-weight:600;">⚠ EGFR SUBTYPE ALERT: ${escHtml(fmt.egfr_subtype_warning)}</div>`:'';
+  return `<div class="so">
+    ${egfrWarn?`<div class="so-row">${egfrWarn}</div>`:''}
+    <div class="so-row"><div class="so-head">Clinical context</div><div class="so-body">${escHtml(fmt.context||'')}</div></div>
+    <div class="so-row">
+      <div class="so-head">Primary recommendation</div>
+      <div class="so-primary">${escHtml(fmt.primary_regimen||'')}</div>
+      <div class="so-body" style="margin-top:5px;font-size:12px;">${escHtml(fmt.primary_rationale||'')}</div>
+    </div>
+    <div class="so-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div><div class="so-head">Apollo mode</div><div class="so-body" style="font-weight:600;">${escHtml(fmt.apollo_regimen||'—')}</div></div>
+      <div><div class="so-head">Manhattan mode</div><div class="so-body" style="font-weight:600;">${escHtml(fmt.manhattan_regimen||'—')}</div></div>
+    </div>
+    ${flagsHtml?`<div class="so-row"><div class="so-head" style="color:var(--red)">Safety flags</div>${flagsHtml}</div>`:''}
+    ${exclHtml?`<div class="so-row"><div class="so-head">Key exclusions</div>${exclHtml}</div>`:''}
+    <div class="so-row">
+      <div class="so-head">Confidence</div>
+      <div class="so-body"><strong>${Math.round(fmt.confidence||0)}%</strong> — ${escHtml(fmt.confidence_note||'')}</div>
+      ${fmt.evidence?`<div class="so-body" style="font-size:11px;color:var(--muted);margin-top:3px;">${escHtml(fmt.evidence)}</div>`:''}
+    </div>
+    ${altsHtml?`<div class="so-row"><div class="so-head">Explore alternatives</div><div class="so-alts">${altsHtml}</div></div>`:''}
+    <div class="so-row so-bg">
+      <div class="so-head">Requires oncologist review</div>
+      <div><span class="so-badge">⚠ Reasoning support only — oncologist authority required</span></div>
+      <a class="raw-toggle" onclick="toggleRaw('${toggleId}')">View raw engine output</a>
+      <div class="raw-output" id="${toggleId}">${escHtml(raw)}</div>
+    </div>
+  </div>`;
+}
 
-  // Biomarkers
-  const bm = schema.biomarkers || {};
-  const bmEl = document.getElementById('biomarkers');
-  bmEl.innerHTML = '';
-  if (!Object.keys(bm).length) { bmEl.innerHTML = '<span style="font-size:11px;color:var(--hint);padding-left:2px;">None detected</span>'; }
-  Object.entries(bm).forEach(([k, v]) => {
-    const span = document.createElement('span');
-    const isPos = v === 'positive' || (typeof v === 'number' && v > 0.5) || v === true;
-    const isNeg = v === 'negative' || v === false;
-    span.className = `bm ${isPos ? 'pos' : isNeg ? 'neg' : 'unk'}`;
-    const display = typeof v === 'number' ? `${k} ${Math.round(v*100)}%` : `${k} ${v}`;
-    span.textContent = display;
+function toggleRaw(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block';}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── Update left panel ─────────────────────────────────────────────────────────
+function updatePanel(schema,fmt){
+  currentPatient=schema;
+  document.getElementById('p-name').textContent=schema._patient_id||'Active patient';
+  document.getElementById('p-meta').textContent=schema._summary||'';
+  document.getElementById('p-cancer').textContent=(schema.cancer_type||'—').toUpperCase();
+  document.getElementById('p-stage').textContent=schema.stage||'—';
+  document.getElementById('p-line').textContent=schema.line?`Line ${schema.line}`:'—';
+  const ecog=schema.ecog_status;
+  const ecEl=document.getElementById('p-ecog');
+  ecEl.textContent=ecog!=null?ecog:'—';
+  ecEl.className='val'+(ecog<=1?' green':ecog<=2?' amber':' red');
+  const crcl=schema.creatinine_clearance;
+  const crEl=document.getElementById('p-crcl');
+  crEl.textContent=crcl?`${crcl} mL/min`:'—';
+  crEl.className='val'+(crcl>=60?' green':crcl>=45?' amber':' red');
+  document.getElementById('p-brain').textContent=schema.brain_mets?'Yes':'No';
+  document.getElementById('p-brain').className='val'+(schema.brain_mets?' red':' green');
+  const bm=schema.biomarkers||{};
+  const bmEl=document.getElementById('biomarkers');
+  bmEl.innerHTML='';
+  if(!Object.keys(bm).length){bmEl.innerHTML='<span style="font-size:11px;color:var(--hint);padding-left:2px;">None detected</span>';}
+  Object.entries(bm).forEach(([k,v])=>{
+    const span=document.createElement('span');
+    const isPos=v==='positive'||(typeof v==='number'&&v>0.5)||v===true;
+    const isNeg=v==='negative'||v===false;
+    span.className=`bm ${isPos?'pos':isNeg?'neg':'unk'}`;
+    span.textContent=typeof v==='number'?`${k} ${Math.round(v*100)}%`:`${k} ${v}`;
     bmEl.appendChild(span);
   });
-
-  // Safety
-  const flags = formatted.safety_flags || [];
-  const sb = document.getElementById('safety-box');
-  if (!flags.length) {
-    sb.innerHTML = '<div class="sb-title">✓ No flags</div>';
-    sb.style.background = 'var(--teal-light)';
-    sb.style.borderColor = 'var(--teal)';
-  } else {
-    sb.style.background = 'var(--amber-light)';
-    sb.style.borderColor = 'var(--amber)';
-    sb.innerHTML = `<div class="sb-title">⚠ ${flags.length} flag${flags.length>1?'s':''}</div>` +
-      flags.map(f => `<div class="sb-item">${escHtml(f.slice(0,70))}</div>`).join('');
-  }
-
-  // Confidence
-  const conf = Math.round(formatted.confidence || 0);
-  document.getElementById('conf-fill').style.width = conf + '%';
-  document.getElementById('conf-score').textContent = conf + '%';
-  document.getElementById('conf-note').textContent = formatted.confidence_note || '';
-
-  // Engine status
-  document.getElementById('st-apollo').textContent = formatted.apollo_regimen ? '✓ ' + formatted.apollo_regimen : 'ready';
-  document.getElementById('st-apollo').className = 'es-val' + (formatted.apollo_regimen ? ' on' : '');
-  document.getElementById('st-manhattan').textContent = formatted.manhattan_regimen ? '✓ ' + formatted.manhattan_regimen : 'ready';
-  document.getElementById('st-manhattan').className = 'es-val' + (formatted.manhattan_regimen ? ' on' : '');
+  const flags=fmt.safety_flags||[];
+  const sb=document.getElementById('safety-box');
+  if(!flags.length){sb.innerHTML='<div class="sb-title">✓ No flags</div>';sb.style.background='var(--teal-light)';sb.style.borderColor='var(--teal)';}
+  else{sb.style.background='var(--amber-light)';sb.style.borderColor='var(--amber)';sb.innerHTML=`<div class="sb-title">⚠ ${flags.length} flag${flags.length>1?'s':''}</div>`+flags.map(f=>`<div class="sb-item">${escHtml(f.slice(0,70))}</div>`).join('');}
+  const conf=Math.round(fmt.confidence||0);
+  document.getElementById('conf-fill').style.width=conf+'%';
+  document.getElementById('conf-score').textContent=conf+'%';
+  document.getElementById('conf-note').textContent=fmt.confidence_note||'';
+  document.getElementById('st-apollo').textContent=fmt.apollo_regimen?'✓ '+fmt.apollo_regimen:'ready';
+  document.getElementById('st-apollo').className='es-val'+(fmt.apollo_regimen?' on':'');
+  document.getElementById('st-manhattan').textContent=fmt.manhattan_regimen?'✓ '+fmt.manhattan_regimen:'ready';
+  document.getElementById('st-manhattan').className='es-val'+(fmt.manhattan_regimen?' on':'');
 }
 
-// ─── Main send handler ────────────────────────────────────────────────────────
-let lastEngineOutput = null;
+// ── EGFR clarification handler ────────────────────────────────────────────────
+function handleEGFRChoice(subtype, displayName){
+  awaitingEGFRClarification=false;
+  const fullText=pendingPatientText+' EGFR subtype: '+subtype;
+  pendingPatientText='';
+  addMsg('doctor',`EGFR subtype: ${displayName}`,false,getTime());
+  runTreatmentFlow(fullText);
+}
 
-async function handleSend() {
-  const ta = document.getElementById('ta');
-  const text = ta.value.trim();
-  if (!text) return;
-  ta.value = ''; ta.style.height = '42px';
+// ── Main send handler ─────────────────────────────────────────────────────────
+async function handleSend(){
+  const ta=document.getElementById('ta');
+  const text=ta.value.trim();
+  if(!text) return;
+  ta.value='';ta.style.height='42px';
   await sendMessage(text);
 }
 
-function qp(text) { sendMessage(text); }
+function qp(text){sendMessage(text);}
 
-async function askAbout(drug) {
+async function askAbout(drug){
+  const prev=appMode;
+  setMode('chat');
   await sendMessage(`Explain why ${drug} was considered or excluded for this patient`);
+  // restore mode after
 }
 
-async function sendMessage(text) {
-  if (!ANTHROPIC_KEY) {
-    addMsg('system', `<div class="so-warn">⚠ Please enter your Anthropic API key in the top-right to activate the engine.</div>`, true, getTime());
+async function sendMessage(text){
+  if(!ANTHROPIC_KEY){
+    addMsg('system',`<div class="so-warn">⚠ Please enter your Anthropic API key top-right to activate the engine.</div>`,true,getTime());
     return;
   }
-  if (isBlocked(text)) {
-    addMsg('doctor', escHtml(text), false, getTime());
-    addMsg('system', `<div class="blocked-msg">🔒 Request exceeds copilot authority boundaries.<br>This action cannot be performed by the chatbot layer. Requires direct oncologist evaluation and decision. SAF layer cannot be bypassed.</div>`, true, getTime());
+  if(isBlocked(text)){
+    addMsg('doctor',escHtml(text),false,getTime());
+    addMsg('system',`<div class="blocked-msg">🔒 Request exceeds copilot authority boundaries. Requires direct oncologist evaluation. SAF layer cannot be bypassed.</div>`,true,getTime());
     return;
   }
 
-  addMsg('doctor', escHtml(text), false, getTime());
-  const btn = document.getElementById('send-btn');
+  addMsg('doctor',escHtml(text),false,getTime());
+  const btn=document.getElementById('send-btn');
   btn.classList.add('loading');
-  addTyping();
 
   try {
-    const isPatientDescription = !lastEngineOutput ||
-      /stage|nsclc|lung|breast|cancer|egfr|alk|pdl1|pd-l1|line|ecog|crcl|creatinine|biomark|first.?line|second.?line|metasta/i.test(text);
-
-    if (isPatientDescription) {
-      // Parse patient → run engine → format output
-      const schema = await parsePatient(text);
-      const engineResult = await runEngine(schema);
-      lastEngineOutput = engineResult.output;
-      const formatted = await formatEngineOutput(engineResult.output, schema);
-
-      // Add to conversation history
-      conversationHistory.push({ role: 'user', content: text });
-      conversationHistory.push({ role: 'assistant', content: JSON.stringify(formatted) });
-
-      updatePanel(schema, formatted);
+    if(appMode==='chat'){
+      addTyping('chat-mode');
+      const answer=await handleChatMessage(text);
       removeTyping();
-      const html = buildStructuredOutput(formatted, engineResult.output);
-      addMsg('system', html, true, getTime());
-
-      // Note if using simulation
-      if (engineResult.source === 'claude_engine_simulation') {
-        const notice = document.createElement('div');
-        notice.style.cssText = 'font-size:10px;color:var(--hint);text-align:center;margin-top:-10px;';
-        notice.textContent = 'Engine: Claude simulation (start python zyphraxis_phase8_server.py for live engine)';
-        document.getElementById('messages').appendChild(notice);
-      }
+      const safe=escHtml(answer).replace(/\n/g,'<br>');
+      addMsg('system',`<div class="bubble">${safe}</div>`,true,getTime(),'chat-mode');
+    } else if(appMode==='strat'){
+      addTyping('strat-mode');
+      const answer=await handleStratMessage(text);
+      removeTyping();
+      const safe=escHtml(answer).replace(/\n/g,'<br>');
+      addMsg('system',`<div class="bubble">${safe}</div>`,true,getTime(),'strat-mode');
     } else {
-      // Follow-up question about existing output
-      conversationHistory.push({ role: 'user', content: text });
-      const answer = await answerFollowUp(text, currentPatient, lastEngineOutput, conversationHistory.slice(-6));
-      conversationHistory.push({ role: 'assistant', content: answer });
-
-      removeTyping();
-      const safeAnswer = escHtml(answer).replace(/\n/g, '<br>');
-      addMsg('system', `<div class="bubble">${safeAnswer}</div><div class="so-badge" style="margin-top:8px;">⚠ Requires oncologist review</div>`, true, getTime());
+      // Treatment mode
+      const isPatient=!lastEngineOutput||/stage|nsclc|lung|breast|cancer|egfr|alk|pdl1|pd-l1|line|ecog|crcl|creatinine|biomark|first.?line|second.?line|metasta/i.test(text);
+      if(isPatient){
+        // Check if EGFR needs clarification
+        if(needsEGFRClarification(text)){
+          awaitingEGFRClarification=true;
+          pendingPatientText=text;
+          const clarifyHtml=`<div class="clarify-box">
+            <div class="clarify-title">⚠ EGFR Mutation Subtype Required</div>
+            <div style="font-size:12px;color:var(--text);margin-bottom:4px;">EGFR subtype significantly changes treatment. Exon 20 insertion requires a completely different drug (amivantamab, not osimertinib). Please specify:</div>
+            <div class="clarify-btns">
+              <button class="clarify-btn" onclick="handleEGFRChoice('exon19del','Exon 19 deletion')">Exon 19 deletion</button>
+              <button class="clarify-btn" onclick="handleEGFRChoice('L858R','L858R')">L858R</button>
+              <button class="clarify-btn" onclick="handleEGFRChoice('exon20ins','Exon 20 insertion')">Exon 20 insertion ⚠</button>
+              <button class="clarify-btn" onclick="handleEGFRChoice('other','Other/Unknown')">Other / Unknown</button>
+            </div>
+          </div>`;
+          addMsg('system',clarifyHtml,true,getTime());
+        } else {
+          await runTreatmentFlow(text);
+        }
+      } else {
+        // Follow-up question
+        addTyping();
+        conversationHistory.push({role:'user',content:text});
+        const sys=`You are Zyphraxis clinical copilot. Reasoning assistant for oncologists.
+Patient: ${JSON.stringify(currentPatient)}
+Engine output: ${lastEngineOutput}
+Rules: answer only about this patient/output. Always end: oncologist review required. Be clinical and concise.`;
+        const answer=await callClaude(conversationHistory.slice(-6),sys,600);
+        conversationHistory.push({role:'assistant',content:answer});
+        removeTyping();
+        const safe=escHtml(answer).replace(/\n/g,'<br>');
+        addMsg('system',`<div class="bubble">${safe}</div><div class="so-badge" style="margin-top:8px;">⚠ Requires oncologist review</div>`,true,getTime());
+      }
     }
-  } catch(err) {
+  } catch(err){
     removeTyping();
-    addMsg('system', `<div class="so-flag">Engine error: ${escHtml(err.message)}. Check API key and try again.</div>`, true, getTime());
+    addMsg('system',`<div class="so-flag">Engine error: ${escHtml(err.message)}. Check API key and try again.</div>`,true,getTime());
   }
-
   btn.classList.remove('loading');
-  document.getElementById('messages').scrollTop = 999999;
+  document.getElementById('messages').scrollTop=999999;
 }
 
-function showDirectSchemaPrompt() {
-  const text = `Direct schema mode: enter patient data as:\ncancer_type: lung\nstage: IV\negfr: positive\nline: 1\necog: 1\ncrcl: 85`;
-  document.getElementById('ta').placeholder = text;
+async function runTreatmentFlow(text){
+  addTyping();
+  try {
+    const schema=await parsePatient(text);
+    const result=await runEngine(schema);
+    lastEngineOutput=result.output;
+    const fmt=await formatOutput(result.output,schema);
+    conversationHistory.push({role:'user',content:text});
+    conversationHistory.push({role:'assistant',content:JSON.stringify(fmt)});
+    updatePanel(schema,fmt);
+    removeTyping();
+    addMsg('system',buildStructuredOutput(fmt,result.output),true,getTime());
+  } catch(err){
+    removeTyping();
+    addMsg('system',`<div class="so-flag">Engine error: ${escHtml(err.message)}. Check API key and try again.</div>`,true,getTime());
+  }
 }
 
 // Textarea auto-resize
-const ta = document.getElementById('ta');
-ta.addEventListener('input', function() {
-  this.style.height = '42px';
-  this.style.height = Math.min(this.scrollHeight, 130) + 'px';
-});
-ta.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
-});
+const ta=document.getElementById('ta');
+ta.addEventListener('input',function(){this.style.height='42px';this.style.height=Math.min(this.scrollHeight,130)+'px';});
+ta.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();handleSend();}});
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
