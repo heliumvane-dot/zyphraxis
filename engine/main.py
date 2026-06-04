@@ -206,9 +206,7 @@ class Phase6Request(BaseModel):
     marrow_status:        Optional[str]            = Field(None)
     progression_type:     Optional[str]            = Field(None)
 
-    # UI metadata (passed through, not used by engine)
-    _patient_id:          Optional[str]            = Field(None)
-    _summary:             Optional[str]            = Field(None)
+    
 
 
 class Phase6Response(BaseModel):
