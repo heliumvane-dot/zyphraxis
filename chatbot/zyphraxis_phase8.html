@@ -538,7 +538,7 @@ async function formatOutput(raw,schema){
   const sys=`Convert Zyphraxis engine output to JSON for display. Output ONLY valid JSON.
 Schema: {context, primary_regimen, primary_rationale, confidence(0-100), apollo_regimen, manhattan_regimen, safety_flags[], exclusions[{drug,reason}], alternatives[], evidence, confidence_note, egfr_subtype_warning(string|null)}
 If engine mentions Exon 20 insertion or amivantamab, set egfr_subtype_warning to a clear warning string.`;
-  const raw2=await callClaude([{role:'user',content:`Patient:${JSON.stringify(schema)}\nEngine:\n${raw}`}],sys,1100);
+  const raw2=await callClaude([{role:'user',content:`Patient:${JSON.stringify(schema)}\nEngine:\n${raw}`}],sys,2500);
   return JSON.parse(raw2.replace(/```json|```/g,'').trim());
 }
 
